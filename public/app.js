@@ -147,3 +147,61 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+// --- variables pour le mode visualisation ---
+let isVisualizing = false;
+const visualizeBtn = document.getElementById('visualizeBtn');
+const canvasWrap = document.getElementById('canvasWrap');
+const appRoot = document.querySelector('.app');
+
+// active/désactive auto-rotation
+function setAutoRotate(enabled) {
+  controls.autoRotate = enabled;
+  controls.autoRotateSpeed = enabled ? 1.2 : 0;
+}
+
+// recentre et ajuste la caméra sur le modèle
+function focusOnModel() {
+  if (!currentMesh) return;
+  const box = new THREE.Box3().setFromObject(currentMesh);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const maxSize = Math.max(size.x, size.y, size.z);
+  const fitHeightDistance = maxSize / (2 * Math.tan((camera.fov * Math.PI) / 360));
+  const distance = fitHeightDistance * 1.4;
+  camera.position.copy(center);
+  camera.position.x += distance;
+  camera.position.y += distance / 3;
+  camera.position.z += distance;
+  camera.lookAt(center);
+  controls.target.copy(center);
+  controls.update();
+}
+
+// gestion du clic sur le bouton Visualiser
+visualizeBtn.addEventListener('click', () => {
+  // si pas de modèle, ouvrir le file input
+  if (!currentMesh) {
+    fileInput.click();
+    return;
+  }
+
+  isVisualizing = !isVisualizing;
+
+  if (isVisualizing) {
+    // entrer en mode visualisation
+    canvasWrap.classList.add('fullscreen');
+    appRoot.classList.add('fullscreen');
+    setAutoRotate(true);
+    focusOnModel();
+    // forcer resize pour s'adapter au nouvel espace
+    setTimeout(() => { resize(); }, 120);
+    visualizeBtn.textContent = 'Quitter la visualisation';
+  } else {
+    // sortir du mode visualisation
+    canvasWrap.classList.remove('fullscreen');
+    appRoot.classList.remove('fullscreen');
+    setAutoRotate(false);
+    resize();
+    visualizeBtn.textContent = 'Visualiser le model 3D';
+  }
+});
