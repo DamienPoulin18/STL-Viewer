@@ -41,3 +41,36 @@ canvas{display:block;width:100%;height:100%}
 
 /* Footer */
 .footer{padding:12px 20px;text-align:center;color:var(--muted);font-size:13px}
+/* Bouton dégradé chaud */
+.btn-visualize{
+  padding:10px 16px;
+  border-radius:10px;
+  border:0;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  background: linear-gradient(90deg, #ff7a18 0%, #ff4e50 100%);
+  box-shadow: 0 10px 30px rgba(255,78,80,0.18);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-visualize:active{ transform: translateY(1px); }
+
+/* Mode visualisation (plein écran pour la zone de rendu) */
+.canvas-wrap.fullscreen{
+  position: fixed;
+  inset: 40px 40px 40px 40px;
+  z-index: 9999;
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(2,6,23,0.85);
+  background: linear-gradient(180deg,#061018,#071018);
+}
+
+/* Cacher panneaux latéraux quand en fullscreen */
+.app.fullscreen .leftpanel,
+.app.fullscreen .rightpanel,
+.app.fullscreen .topbar,
+.app.fullscreen .footer {
+  display: none;
+}
+.app.fullscreen .viewer { flex: 1 1 100%; padding: 0; }
+
